@@ -1,15 +1,11 @@
 import '../../App.css';
-import { Link } from 'react-router-dom';
-
-
+import Routes from '../Routes/Routes';
+import Nabvar from '../Global/Navbar';
 function App() {
   return (
       <main>
-          {/* <div>
-            <Link to="/">Login</Link>
-            <Link to="/Dashboard">Dashboard</Link>
-            <Link to="/sign-up">Sign Up</Link>
-          </div> */}
+          <Nabvar />
+          <Routes />
       </main>
   )
 }

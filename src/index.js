@@ -5,10 +5,9 @@ import App from './Components/App/App';
 import reportWebVitals from './reportWebVitals';
 import { BrowserRouter } from 'react-router-dom';
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
-import Routes from './Components/Routes/Routes';
+
 ReactDOM.render(
   <BrowserRouter>
-      <Routes />
       <App />
   </BrowserRouter>, 
   document.getElementById('root')
