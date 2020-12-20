@@ -8,18 +8,16 @@ class SignUp extends Component {
             username: '',
             password: '',
             password_confirm: '',
-            errors: []
+            errors: [],
+            userCreated: false
         }
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     }
-    componentDidMount(){
-        
-    }
-    callBackendApi = (data) => {
+    callBackendApi = (data, cb) => {
         axios
       .post('http://localhost:8080/api/create-user', data)
-      .then(() => console.log('linden Created'))
+      .then((res) => cb(res))
       .catch(err => {
         console.error(err);
       });
@@ -29,10 +27,20 @@ class SignUp extends Component {
         const name = target.name;
         this.setState({
             [name]: target.value
+        }, () => {
+            if(this.state.password === this.state.password_confirm){
+                this.setState({errors: []});
+            }
         });
     }
     checkPasswordsMatch(){
         return this.state.password === this.state.password_confirm ? true : false
+    }
+    createUserCallback = (res) => {
+        this.setState({errors: [res.data.message], userCreated:res.data.success});
+       if(res.data.success){
+           document.querySelector('#login-form').reset();
+       }
     }
     handleSubmit(e){
         e.preventDefault();
@@ -41,7 +49,7 @@ class SignUp extends Component {
         if(!this.checkPasswordsMatch()){
             //show error on frontend
             this.setState({errors: []}, () => {
-                this.setState({errors: [...this.state.errors, 'Passwords Do Not Match.']});
+                this.setState({errors: ['Passwords Do Not Match.']});
             })
             return false;
         }
@@ -49,15 +57,17 @@ class SignUp extends Component {
         this.callBackendApi({
             username: this.state.username,
             password: this.state.password
-        });
+        }, this.createUserCallback);
         
     }
     render(){
         return(
             <div>
-            <FormError errors={this.state.errors}/>
+            
             
             <form id="login-form" onSubmit={this.handleSubmit}>
+                <h2>Sign Up</h2>
+                <FormError errors={this.state.errors}/>
                 <div className="mb-3">
                     <label htmlFor="username-label" className="form-label">Username</label>
                     <input 

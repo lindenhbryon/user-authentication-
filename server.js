@@ -26,27 +26,52 @@ db.mongoose.connect(db.url, {useNewUrlParser: true, useUnifiedTopology: true}).t
   });
 
 
-app.post('/api/create-user', async (req, res) => {
-  bcrypt.genSalt(saltRounds, function(err, salt) {
-    bcrypt.hash(req.body.password, salt, async (err, hash) => {
-        console.log("hash", hash);
-        const user = new userModel({
-          username: req.body.username,
-          password: hash
+app.post('/api/create-user',  (req, res) => {
+  bcrypt.genSalt(saltRounds, (err, salt) => {
+    bcrypt.hash(req.body.password, salt, (err, hash) => {
+        const query = userModel.where({
+          username: req.body.username
         });
         try {
-          await user.save();
-          res.send(user);
+          query.findOne(async (err, user) => {
+            if (err) return handleError(err);
+            if (user) {
+              res.send({
+                success: false,
+                message: 'Username is already in use'
+              });
+            }else {
+              const user = new userModel({
+                username: req.body.username,
+                password: hash
+              });
+              try {
+                await user.save();
+                res.send({
+                  success: true,
+                  message: 'User created successfully.'
+                });
+              } catch (err) {
+                res.send({
+                  success: false,
+                  message: 'Something went wrong whilst creating the user, please try again.'
+                });
+              }
+            }
+          });
         } catch (err) {
-          res.status(500).send(err);
+          res.send({
+            success: false,
+            message: 'Something went wrong whilst creating the user, please try again.'
+          });
         }
     });
   });
 });
-app.get('/api/home', function(req, res) {
+app.get('/api/home', (req, res) => {
   res.send({home: 1});
 });
-app.get('/api/secret', function(req, res) {
+app.get('/api/secret', (req, res) => {
   res.send('The password is potato');
 });
 
