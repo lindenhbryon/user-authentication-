@@ -1,6 +1,7 @@
 import { Component } from 'react';
 import axios from 'axios';
 import FormError from '../Error/FormError';
+import { Redirect } from 'react-router-dom';
 class SignUp extends Component {
     constructor(props){
         super(props);
@@ -9,7 +10,8 @@ class SignUp extends Component {
             password: '',
             password_confirm: '',
             errors: [],
-            userCreated: false
+            userCreated: false,
+            redirect: false
         }
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -41,19 +43,18 @@ class SignUp extends Component {
        if(res.data.success){
            document.querySelector('#login-form').reset();
        }
+       setTimeout(() => {
+            this.setState({redirect: true});
+       }, 1500);
     }
     handleSubmit(e){
         e.preventDefault();
-        
-        //we should also check if username exists here
         if(!this.checkPasswordsMatch()){
-            //show error on frontend
             this.setState({errors: []}, () => {
                 this.setState({errors: ['Passwords Do Not Match.']});
             })
             return false;
         }
-        //send data to backend
         this.callBackendApi({
             username: this.state.username,
             password: this.state.password
@@ -62,48 +63,47 @@ class SignUp extends Component {
     }
     render(){
         return(
-            <div>
-            
-            
-            <form id="login-form" onSubmit={this.handleSubmit}>
-                <h2>Sign Up</h2>
-                <FormError errors={this.state.errors}/>
-                <div className="mb-3">
-                    <label htmlFor="username-label" className="form-label">Username</label>
-                    <input 
-                        type="text"
-                        className="form-control"
-                        name="username"
-                        id="username"
-                        aria-describedby="username"
-                        onChange={this.handleChange}
-                        required
-                    />
-                </div>
-                <div className="mb-3">
-                    <label htmlFor="password-field" className="form-label">Password</label>
-                    <input
-                        type="password"
-                        className="form-control"
-                        name="password"
-                        id="password"
-                        onChange={this.handleChange} 
-                        required
-                    />
-                </div>
-                <div className="mb-3">
-                    <label htmlFor="password-field" className="form-label">Confirm Password</label>
-                    <input
-                        type="password"
-                        className="form-control"
-                        name="password_confirm"
-                        id="password-confirm" 
-                        onChange={this.handleChange}
-                        required
-                    />
-                </div>
-                <button type="submit" className="btn btn-primary">Submit</button>
-            </form>
+            <div className="center-container">
+                 {this.state.redirect ? <Redirect to="/" /> : ''}
+                <form id="login-form" onSubmit={this.handleSubmit}>
+                    <h2>Sign Up</h2>
+                    <FormError errors={this.state.errors} userCreated={this.state.userCreated}/>
+                    <div className="mb-3">
+                        <label htmlFor="username-label" className="form-label">Username</label>
+                        <input 
+                            type="text"
+                            className="form-control"
+                            name="username"
+                            id="username"
+                            aria-describedby="username"
+                            onChange={this.handleChange}
+                            required
+                        />
+                    </div>
+                    <div className="mb-3">
+                        <label htmlFor="password-field" className="form-label">Password</label>
+                        <input
+                            type="password"
+                            className="form-control"
+                            name="password"
+                            id="password"
+                            onChange={this.handleChange} 
+                            required
+                        />
+                    </div>
+                    <div className="mb-3">
+                        <label htmlFor="password-field" className="form-label">Confirm Password</label>
+                        <input
+                            type="password"
+                            className="form-control"
+                            name="password_confirm"
+                            id="password-confirm" 
+                            onChange={this.handleChange}
+                            required
+                        />
+                    </div>
+                    <button type="submit" className="btn btn-primary">Submit</button>
+                </form>
             </div>
         )
     }

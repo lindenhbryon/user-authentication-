@@ -19,7 +19,8 @@ function LoginForm(){
 class Login extends Component {
     render() {
       return (
-        <div>
+        <div className="center-container">
+          <h2>Login</h2>
             <LoginForm/>
         </div>
       );

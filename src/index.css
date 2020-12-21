@@ -1,8 +1,12 @@
-#login-form {
-  width: 40%;
+.center-container {
+  width: 30%;
   margin: 0 auto;
-  margin-top: 70px;
+  margin-top: 150px;
 }
 .is-active{
-  color: red;
+  color: #007bff !important;
+}
+.nav-item a {
+  margin-right:10px;
+  color: rgba(0,0,0,.9);
 }
