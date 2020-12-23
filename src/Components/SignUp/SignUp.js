@@ -13,10 +13,9 @@ class SignUp extends Component {
             userCreated: false,
             redirect: false
         }
-        this.handleChange = this.handleChange.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
+        
     }
-    callBackendApi = (data, cb) => {
+    createUser = (data, cb) => {
         axios
       .post('http://localhost:8080/api/create-user', data)
       .then((res) => cb(res))
@@ -24,7 +23,7 @@ class SignUp extends Component {
         console.error(err);
       });
     }
-    handleChange(e){
+    handleChange = (e) => {
         const target = e.target;
         const name = target.name;
         this.setState({
@@ -47,7 +46,7 @@ class SignUp extends Component {
             this.setState({redirect: true});
        }, 1500);
     }
-    handleSubmit(e){
+    handleSubmit = (e) => {
         e.preventDefault();
         if(!this.checkPasswordsMatch()){
             this.setState({errors: []}, () => {
@@ -55,7 +54,7 @@ class SignUp extends Component {
             })
             return false;
         }
-        this.callBackendApi({
+        this.createUser({
             username: this.state.username,
             password: this.state.password
         }, this.createUserCallback);
@@ -67,7 +66,7 @@ class SignUp extends Component {
                  {this.state.redirect ? <Redirect to="/" /> : ''}
                 <form id="login-form" onSubmit={this.handleSubmit}>
                     <h2>Sign Up</h2>
-                    <FormError errors={this.state.errors} userCreated={this.state.userCreated}/>
+                    <FormError errors={this.state.errors} userCreated={this.state.loginSuccess}/>
                     <div className="mb-3">
                         <label htmlFor="username-label" className="form-label">Username</label>
                         <input 

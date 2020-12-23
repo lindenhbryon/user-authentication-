@@ -1,5 +1,4 @@
 function FormError(props){
-    console.log("props", props);
     const colorClass = props.userCreated == true ? 'alert alert-success' : 'alert alert-danger';
     if(props.errors.length === 0){
         return false;

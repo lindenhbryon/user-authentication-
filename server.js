@@ -3,10 +3,9 @@ const bodyParser = require('body-parser')
 const app = express();
 const cors = require('cors');
 const db = require('./app/models');
-const userModel = require('./app/models/user');
-//Set up default mongoose connection
-const bcrypt = require('bcrypt');
-const saltRounds = 10;
+
+const routes = require('./app/routes/index');
+
 app.use(
   cors({
     origin: 'http://localhost:3000',
@@ -26,53 +25,7 @@ db.mongoose.connect(db.url, {useNewUrlParser: true, useUnifiedTopology: true}).t
   });
 
 
-app.post('/api/create-user',  (req, res) => {
-  bcrypt.genSalt(saltRounds, (err, salt) => {
-    bcrypt.hash(req.body.password, salt, (err, hash) => {
-        const query = userModel.where({
-          username: req.body.username
-        });
-        try {
-          query.findOne(async (err, user) => {
-            if (err) return handleError(err);
-            if (user) {
-              res.send({
-                success: false,
-                message: 'Username is already in use'
-              });
-            }else {
-              const user = new userModel({
-                username: req.body.username,
-                password: hash
-              });
-              try {
-                await user.save();
-                res.send({
-                  success: true,
-                  message: 'User created successfully.'
-                });
-              } catch (err) {
-                res.send({
-                  success: false,
-                  message: 'Something went wrong whilst creating the user, please try again.'
-                });
-              }
-            }
-          });
-        } catch (err) {
-          res.send({
-            success: false,
-            message: 'Something went wrong whilst creating the user, please try again.'
-          });
-        }
-    });
-  });
-});
-app.get('/api/home', (req, res) => {
-  res.send({home: 1});
-});
-app.get('/api/secret', (req, res) => {
-  res.send('The password is potato');
-});
+app.use('/', routes);
+
 
 app.listen(process.env.PORT || 8080, () => console.log("listening on port 8080"));
