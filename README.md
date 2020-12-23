@@ -1,3 +1,8 @@
+This is a simple user authentication system using Node/Mongodb/Express/React. If i were going to improve on this item I would most likely use Oauth2 with JWT and use Redux to hold a central state container
+
+
+
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
